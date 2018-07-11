@@ -55,7 +55,7 @@ Let's Encrypt issues certificates that you can use to prove that you have contro
 To get our first certificate, Certbot needs to answer a cryptographic challenge issued by Let's Encrypt in order to prove to them that we control our domain. We will use the  `--standalone` option to tell Certbot to handle the HTTP challenge request on its own. `-d` is used to specify the domain you want a certificate for:
 
 ```console
-$ sudo certbot certonly --standalone -d example-domain.com
+$ sudo certbot certonly --standalone -d example.com
 ```
 
 You will be prompted to enter an email address when running this command and agree to the terms of service. After doing so, you should see a message telling you the process was successful and where your certificates are stored.
@@ -78,7 +78,7 @@ You will be prompted to select a text editor, choose whatever text-editor you pr
 
 The `30 2 * * *` part of this line means "run the following command at 02:30, every day". The `renew`command for Certbot will check all certificates installed on the system and update any that are set to expire in less than thirty days. `--noninteractive` tells Certbot not to wait for user input. `--post-hook "systemctl restart mosquitto"` will restart Mosquitto to pick up the new certificate, but only if the certificate was renewed.
 
-#### Step 5 - Configuring MQTT Passwords
+#### Step 5 - Configuring MQTT Passwords and MQTT SSL
 
 To make Mosquitto more secure we want to configure it to use passwords. To do this we can use Mosquitto's own utility, `mosquitto_passwd`, for generating a password file. The following command will prompt you to enter and reenter a password for your new user, and place the result in `/etc/mosquitto/passwd`:
 
@@ -101,4 +101,18 @@ password_file /etc/mosquitto/passwd
 
  `allow_anonymous false` will make Mosquitto refuse all non-authenticated connections, and `password_file /etc/mosquitto/passwd` tells Mosquitto in which file to look for user and password information.
 
-### To be continued...
+We also want to configure SSL, so paste the following into the same file (`/etc/mosquitto/conf.d/default.conf`):
+
+```
+listener 8883
+certfile /etc/letsencrypt/live/mqtt.example.com/cert.pem
+cafile /etc/letsencrypt/live/mqtt.example.com/chain.pem
+keyfile /etc/letsencrypt/live/mqtt.example.com/privkey.pem
+```
+
+Now, save and exit the file, then restart Mosquitto to update the settings:
+
+```console
+$ sudo systemctl restart mosquitto
+```
+
