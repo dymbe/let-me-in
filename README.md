@@ -2,9 +2,7 @@
 
 A IoT-project for opening my door using a cellphone. The project can easily be used for similar tasks. For this task I utilized the [MQTT](http://mqtt.org)-protocol with [Mosquitto](https://mosquitto.org/) as the MQTT-broker. SSL certificates from [Let's Encrypt](https://letsencrypt.org/) is used to secure all MQTT communications. The whole system is controllable through [MQTT Dash](https://play.google.com/store/apps/details?id=net.routix.mqttdash&hl=en)
 
-## Getting started
-
-### What you need
+## What you need
 
 * A Debian-based server. I used the cheapest [DigitalOcean](https://www.digitalocean.com) Ubuntu-server.
 * A domain name that points at your server. Will be necessary for using Let's Encrypt.
@@ -14,9 +12,9 @@ A IoT-project for opening my door using a cellphone. The project can easily be u
 
 **Note:** The project is easily doable with other equipment, but you might not be able to follow this guide as easily then.
 
-### Setting up the server
+## Setting up the server
 
-#### Step 1 - Installing Mosquitto
+### Step 1 - Installing Mosquitto
 
 1. Start by making sure everything is up-to-date:
 
@@ -31,7 +29,7 @@ $ sudo apt-get upgrade
 $ sudo apt-get install mosquitto mosquitto-clients
 ```
 
-#### Step 2 - Installing Certbot
+### Step 2 - Installing Certbot
 
 Let's Encrypt is a service offering free SSL certificates through an automated API. To utilize this we have to install Certbot, the official Let's Encrypt-client.
 
@@ -48,7 +46,7 @@ $ sudo apt-get update
 $ sudo apt-get install certbot
 ```
 
-#### Step 3 - Getting Your First Let's Encrypt Certificate 
+### Step 3 - Getting Your First Let's Encrypt Certificate
 
 Let's Encrypt issues certificates that you can use to prove that you have control over your domain. Let's Encrypt does not issue certificates directly to IP-addresses, and this is why we need a domain name.
 
@@ -60,7 +58,7 @@ $ sudo certbot certonly --standalone -d example.com
 
 You will be prompted to enter an email address when running this command and agree to the terms of service. After doing so, you should see a message telling you the process was successful and where your certificates are stored.
 
-#### Step 4 - Setting up Automatic Certificate Renewal
+### Step 4 - Setting up Automatic Certificate Renewal
 
 Your Let's Encrypt certificate will expire in 90 days. Unless you want do do the previous step manually, you should automate this process.
 
@@ -78,7 +76,7 @@ You will be prompted to select a text editor, choose whatever text-editor you pr
 
 The `30 2 * * *` part of this line means "run the following command at 02:30, every day". The `renew`command for Certbot will check all certificates installed on the system and update any that are set to expire in less than thirty days. `--noninteractive` tells Certbot not to wait for user input. `--post-hook "systemctl restart mosquitto"` will restart Mosquitto to pick up the new certificate, but only if the certificate was renewed.
 
-#### Step 5 - Configuring MQTT Passwords and MQTT SSL
+### Step 5 - Configuring MQTT Passwords and MQTT SSL
 
 To make Mosquitto more secure we want to configure it to use passwords. To do this we can use Mosquitto's own utility, `mosquitto_passwd`, for generating a password file. The following command will prompt you to enter and reenter a password for your new user, and place the result in `/etc/mosquitto/passwd`:
 
@@ -110,9 +108,34 @@ cafile /etc/letsencrypt/live/mqtt.example.com/chain.pem
 keyfile /etc/letsencrypt/live/mqtt.example.com/privkey.pem
 ```
 
+`listener 8883` tells Mosquitto to start listening for new connections on port 8883, which is the standard port for MQTT with SSL. The standard port for MQTT without SSL is 1338. The next three lines, `certfile`, `cafile`, and `keyfile`, all point Mosquitto to the appropriate Let's Encrypt files to set up the encrypted connections.
+
 Now, save and exit the file, then restart Mosquitto to update the settings:
 
 ```console
 $ sudo systemctl restart mosquitto
 ```
 
+Now let's finally test if the Mosquitto is working properly. The MQTT protocol communicates through "topics". If a client subscribes to a particular topic, it will received all messages other clients publish to that topic. Let's try to subscribe to "test":
+
+```console
+mosquitto_sub -h example.com -t test -p 8883 -u my-new-user -P my-new-password --capath /etc/ssl/certs/
+```
+
+ `-h` specifies the hostname of the MQTT-broker (the domain name pointing to your Ubuntu-server), `-t` specifies what topic, `-p` specifies which port, `-u` is the username of the user you made in earlier, `-P` (capitalized) is the password of the user.
+
+Finally, the `--capath /etc/ssl/certs/` option enables SSL for `mosquitto_sub`, and tells it where to look for root certificates. These are typically installed by your operating system, so the path is different for Mac OS, Windows, etc. `mosquitto_pub` uses the root certificate to verify that the Mosquitto server's certificate was properly signed by the Let's Encrypt certificate authority. It's important to note that `mosquitto_pub` and `mosquitto_sub` will not attempt an SSL connection without this option, even if you're connecting to port 8883, the standard port for MQTT + SSL.
+
+If everything goes well, **nothing will happen**. Your console is now listening to messages for the "test"-topic. Now open another console window and publish a message to the "test"-topic:
+
+```console
+mosquitto_pub -h example.com -t test -p 8883 -u my-new-user -P my-new-password --capath /etc/ssl/certs/ -m "hello world!"
+```
+
+If everything is working properly you should now see a "hello world!" inside the subscribing console.
+
+**Congrats, you now have a fully functional and secure MQTT-broker!**
+
+## Setting up the Raspberry Pi
+
+#### To be continued...
