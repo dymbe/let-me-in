@@ -8,7 +8,7 @@ config.read("config.ini")
 NEUTRAL_POSITION = config["pi"]["neutral_position_duty_cycle"]
 PRESSED_POSITION = config["pi"]["pressed_position_duty_cycle"]
 PWM_PIN = config["pi"]["pwm_pin"]
-SERVO_FREQUENCY = config["pi"]["pwm_pin"]
+SERVO_FREQUENCY = config["pi"]["servo_frequency"]
 
 
 class Button:
