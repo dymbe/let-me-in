@@ -8,7 +8,7 @@ config_path = os.path.realpath(__file__).rsplit("/", 1)[0] + "/config.ini"
 print(config_path)
 
 config = ConfigParser()
-config.read("config.ini")
+config.read(config_path)
 
 username = config["mqtt"]["username"]
 password = config["mqtt"]["password"]
