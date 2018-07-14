@@ -8,9 +8,9 @@ config.read("config.ini")
 
 username = config["mqtt"]["username"]
 password = config["mqtt"]["password"]
+topic = config["mqtt"]["topic"]
 host = config["server"]["host"]
 port = int(config["server"]["port"])
-topic = config["topic"]
 
 
 def on_connect(client, userdate, flags, rc):
