@@ -1,6 +1,6 @@
-#import paho.mqtt.client as mqtt
+import paho.mqtt.client as mqtt
 from configparser import ConfigParser
-#from button import Button
+from button import Button
 
 
 config = ConfigParser()
