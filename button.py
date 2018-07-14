@@ -1,10 +1,14 @@
 # The python-representation of the button for opening my door
+import os
 import RPi.GPIO as GPIO
 import time
 from configparser import ConfigParser
 
+config_path = os.path.realpath(__file__).rsplit("/", 1)[0] + "/config.ini"
+
 config = ConfigParser()
-config.read("config.ini")
+config.read(config_path)
+
 neutral_postition = float(config["pi"]["neutral_position_duty_cycle"])
 pressed_postition = float(config["pi"]["pressed_position_duty_cycle"])
 pwm_pin = int(config["pi"]["pwm_pin"])

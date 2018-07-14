@@ -5,8 +5,6 @@ from button import Button
 
 config_path = os.path.realpath(__file__).rsplit("/", 1)[0] + "/config.ini"
 
-print(config_path)
-
 config = ConfigParser()
 config.read(config_path)
 
