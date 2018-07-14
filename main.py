@@ -19,7 +19,7 @@ def on_message(client, userdata, msg):
 username = config["credentials"]["username"]
 password = config["credentials"]["password"]
 host = config["server"]["host"]
-port = config["server"]["port"]
+port = int(config["server"]["port"])
 
 client = mqtt.Client()
 client.username_pw_set(username=username, password=password)

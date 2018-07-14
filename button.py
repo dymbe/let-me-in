@@ -5,10 +5,10 @@ from configparser import ConfigParser
 
 config = ConfigParser()
 config.read("config.ini")
-NEUTRAL_POSITION = config["pi"]["neutral_position_duty_cycle"]
-PRESSED_POSITION = config["pi"]["pressed_position_duty_cycle"]
-PWM_PIN = config["pi"]["pwm_pin"]
-SERVO_FREQUENCY = config["pi"]["servo_frequency"]
+NEUTRAL_POSITION = float(config["pi"]["neutral_position_duty_cycle"])
+PRESSED_POSITION = float(config["pi"]["pressed_position_duty_cycle"])
+PWM_PIN = int(config["pi"]["pwm_pin"])
+SERVO_FREQUENCY = float(config["pi"]["servo_frequency"])
 
 
 class Button:
