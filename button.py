@@ -5,25 +5,27 @@ from configparser import ConfigParser
 
 config = ConfigParser()
 config.read("config.ini")
-NEUTRAL_POSITION = float(config["pi"]["neutral_position_duty_cycle"])
-PRESSED_POSITION = float(config["pi"]["pressed_position_duty_cycle"])
-PWM_PIN = int(config["pi"]["pwm_pin"])
-SERVO_FREQUENCY = float(config["pi"]["servo_frequency"])
+neutral_postition = float(config["pi"]["neutral_position_duty_cycle"])
+pressed_postition = float(config["pi"]["pressed_position_duty_cycle"])
+pwm_pin = int(config["pi"]["pwm_pin"])
+servo_frequency = float(config["pi"]["servo_frequency"])
 
 
 class Button:
     def __enter__(self):
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(PWM_PIN, GPIO.OUT)
-        self.pwm = GPIO.PWM(PWM_PIN, SERVO_FREQUENCY)
+        GPIO.setup(pwm_pin, GPIO.OUT)
+        self.pwm = GPIO.PWM(pwm_pin, servo_frequency)
         self.pwm.start(0)
         return self
 
     def press(self):
-        self.pwm.ChangeDutyCycle(PRESSED_POSITION)
+        self.pwm.ChangeDutyCycle(pressed_postition)
+        print("Pressing button")
         time.sleep(1)
-        self.pwm.ChangeDutyCycle(NEUTRAL_POSITION)
+        self.pwm.ChangeDutyCycle(neutral_postition)
         time.sleep(1)
+        print("Button pressed")
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        GPIO.cleanup(PWM_PIN)
+        GPIO.cleanup(pwm_pin)

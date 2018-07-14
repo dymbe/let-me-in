@@ -6,20 +6,23 @@ from button import Button
 config = ConfigParser()
 config.read("config.ini")
 
+username = config["mqtt"]["username"]
+password = config["mqtt"]["password"]
+host = config["server"]["host"]
+port = int(config["server"]["port"])
+topic = config["topic"]
+
 
 def on_connect(client, userdate, flags, rc):
-    client.subscribe("teknobyen/doors/front/open")
+    print("Connected to host")
+    client.subscribe(topic)
 
 
 def on_message(client, userdata, msg):
+    print("Received message")
     with Button() as button:
         button.press()
 
-
-username = config["credentials"]["username"]
-password = config["credentials"]["password"]
-host = config["server"]["host"]
-port = int(config["server"]["port"])
 
 client = mqtt.Client()
 client.username_pw_set(username=username, password=password)
