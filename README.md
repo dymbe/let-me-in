@@ -1,4 +1,4 @@
-# Let-me-in
+# Open-sesame
 
 A IoT-project for opening my door using a cellphone. The project can easily be used for similar tasks. For this task I utilized the [MQTT](http://mqtt.org)-protocol with [Mosquitto](https://mosquitto.org/) as the MQTT-broker. SSL certificates from [Let's Encrypt](https://letsencrypt.org/) is used to secure all MQTT communications. The whole system is controllable through [MQTT Dash](https://play.google.com/store/apps/details?id=net.routix.mqttdash&hl=en)
 
