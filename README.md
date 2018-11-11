@@ -1,16 +1,16 @@
-# Let-me-in
+# Open-sesame
 
-A IoT-project for opening my door using a cellphone. The project can easily be used for similar tasks. For this task I utilized the [MQTT](http://mqtt.org)-protocol with [Mosquitto](https://mosquitto.org/) as the MQTT-broker. SSL certificates from [Let's Encrypt](https://letsencrypt.org/) is used to secure all MQTT communications. The whole system is controllable through [MQTT Dash](https://play.google.com/store/apps/details?id=net.routix.mqttdash&hl=en)
+A IoT-project for opening a door using a mobile phone. For this task I utilized the [MQTT](http://mqtt.org)-protocol with [Mosquitto](https://mosquitto.org/) as the MQTT-broker. SSL certificates from [Let's Encrypt](https://letsencrypt.org/) is used to secure all MQTT communications. The whole system is controllable through [MQTT Dash](https://play.google.com/store/apps/details?id=net.routix.mqttdash&hl=en)
 
 ## What you need
 
-* A Debian-based server. I used the cheapest [DigitalOcean](https://www.digitalocean.com) Ubuntu-server.
+* An Ubuntu server. I used the cheapest [DigitalOcean](https://www.digitalocean.com) server.
 * A domain name that points at your server. Will be necessary for using Let's Encrypt.
 * A Raspberry Pi. I used a Raspberry Pi 3 Model B.
-* A servo-motor. I used a really cheap 9G micro-servo from ebay.
+* A servo-motor. I used a cheap 9G micro-servo from ebay.
 * Some wires.
 
-**Note:** The project is easily doable with other equipment, but you might not be able to follow this guide as easily then.
+**Note:** The project can be done with other equipment, but then you might not be able to follow this guide step by step.
 
 ## Setting up the server
 
@@ -134,8 +134,20 @@ mosquitto_pub -h example.com -t test -p 8883 -u my-new-user -P my-new-password -
 
 If everything is working properly you should now see a "hello world!" inside the subscribing console.
 
-**Congrats, you now have a fully functional and secure MQTT-broker!**
+**Congratulations, you now have a fully functional and secure MQTT-broker!**
 
 ## Setting up the Raspberry Pi
 
-#### To be continued...
+Install [paho-mqtt](https://pypi.org/project/paho-mqtt/) for Python 3:
+
+```con
+$ pip3 install paho-mqtt
+```
+
+Then simply run the main.py script:
+
+```console
+$ python3 main.py
+```
+
+... and everything should be working.
