@@ -1,7 +1,9 @@
+#!/usr/bin/python3
 import os
 import paho.mqtt.client as mqtt
 from configparser import ConfigParser
 from button import Button
+
 
 config_path = os.path.realpath(__file__).rsplit("/", 1)[0] + "/config.ini"
 
@@ -24,6 +26,7 @@ def on_message(client, userdata, msg):
     print("Received message")
     with Button() as button:
         button.press()
+        client.publish("teknobyen/doors/front/opening", "opening", 2)
 
 
 client = mqtt.Client()
